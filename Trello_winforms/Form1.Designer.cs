@@ -56,9 +56,9 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(582, 353);
-            this.MaximumSize = new System.Drawing.Size(1300, 400);
-            this.MinimumSize = new System.Drawing.Size(600, 400);
+            this.ClientSize = new System.Drawing.Size(1282, 953);
+            this.MaximumSize = new System.Drawing.Size(1300, 1000);
+            this.MinimumSize = new System.Drawing.Size(1300, 1000);
             this.Name = "Form1";
             this.Text = "Winllo";
             this.Load += new System.EventHandler(this.Form1_Load);
