@@ -130,4 +130,114 @@ run {
     some s: Section, t: Task | moveTaskToSection[t, s, s]
 }
 ```
+# 📊 **Діаграми**
 
+## Діаграма класів
+![Діаграма класів](Trello_winforms/UML/class.jpg)
+```
+@startuml
+
+class Task {
+    -title: String
+    -description: String
+    -backgroundColor: Color
+    -location: Point
+    +Task(title: String, description: String)
+    +createTaskPanel(taskMenu: ContextMenuStrip): Panel
+}
+
+class Section {
+    -name: String
+    -tasks: List<Task>
+    +Section(name: String)
+    +addTask(task: Task): void
+    +removeTask(task: Task): void
+    +repositionTasks(): void
+}
+
+class Point {
+    -x: int
+    -y: int
+    +Point(x: int, y: int)
+}
+
+class ContextMenuStrip {
+    +show(): void
+}
+
+Task "1" -- "0..*" Section : contains
+Section "1" -- "0..*" Task : has
+
+@enduml
+```
+
+## Діаграма використання
+![Діаграма використання](Trello_winforms/UML/usecase.jpg)
+```
+@startuml
+
+actor User
+
+rectangle "Task Management System" {
+    User --> (Add Task)
+    User --> (Rename Task)
+    User --> (Change Task Description)
+    User --> (Change Task Color)
+    User --> (Delete Task)
+    User --> (Move Task to Section)
+    User --> (Add Section)
+    User --> (Rename Section)
+    User --> (Change Section Color)
+    User --> (Delete Section)
+}
+
+@enduml
+```
+## Діаграма послідовності
+![Діаграма послідовності](Trello_winforms/UML/sequence.jpg)
+```
+@startuml
+actor User
+participant "Task Management System" as System
+participant "Task" as Task
+participant "Section" as Section
+participant "ContextMenu" as Menu
+
+User -> System: Add Task
+System -> Task: Create Task
+Task -> System: Return Task Panel
+System -> Section: Add Task to Section
+Section -> System: Update Section Layout
+System -> User: Return Task Panel
+
+User -> System: Move Task to Section
+System -> Task: Remove Task from Current Section
+System -> Section: Add Task to Target Section
+Section -> System: Update Section Layout
+System -> User: Return Updated Layout
+
+User -> System: Rename Task
+System -> Task: Change Title
+Task -> User: Prompt for New Title
+User -> Task: Provide New Title
+Task -> System: Update Task Title
+System -> User: Return Updated Task
+
+User -> System: Rename Section
+System -> Section: Change Section Title
+Section -> User: Prompt for New Section Title
+User -> Section: Provide New Title
+Section -> System: Update Section Title
+System -> User: Return Updated Section
+
+User -> System: Delete Task
+System -> Task: Remove Task from Section
+System -> Section: Reposition Tasks
+System -> User: Return Updated Layout
+
+User -> System: Delete Section
+System -> Section: Remove Section
+System -> User: Return Updated Layout
+
+@enduml
+```
