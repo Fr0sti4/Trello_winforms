@@ -83,3 +83,49 @@
 - ▶️ Час встановлення додатка.
 - ▶️ Відсоток тестів, які проходять на різних версіях Windows.
 
+# 📊 **Специфікаця обмежень в Alloy**
+sig Task {
+    title: one String,
+    description: one String,
+    backgroundColor: one String,  // Колір фону задачі
+    location: one Point
+}
+
+sig Section {
+    name: one String,
+    tasks: set Task  // Секція містить набір задач
+}
+
+sig Point {
+    x: Int,
+    y: Int
+}
+
+fact {
+    // Обмеження на розміри задачі
+    all t: Task | t.location.x >= 0 and t.location.y >= 0
+    all t: Task | t.location.x <= 150 and t.location.y <= 100
+    
+    // Обмеження на позиціонування задач
+    all s: Section, t1, t2: Task |
+        t1 in s.tasks and t2 in s.tasks and t1 != t2 =>
+            (t1.location.x != t2.location.x or t1.location.y != t2.location.y)
+}
+
+// Функція для нової позиції задачі
+fun newLocation: Point {
+    { p: Point | p.x = 5 and p.y = 35 }
+}
+
+// Передикат переміщення задачі до нової секції
+pred moveTaskToSection(t: Task, from: Section, to: Section) {
+    t in from.tasks
+    not t in to.tasks
+    t.location in newLocation
+}
+
+// Виконання сценарію переміщення задачі
+run {
+    some s: Section, t: Task | moveTaskToSection[t, s, s]
+}
+
