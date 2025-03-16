@@ -4,117 +4,122 @@ using System.Windows.Forms;
 
 public class Sections
 {
-    private Control parent;
-    private int sectionWidth = 150;
-    private int sectionSpacing = 5;
-    private ContextMenuStrip sectionMenu;
+    private Control parent;  // Батьківський контроль, в якому будуть розміщуватися секції та задачі
+    private int sectionWidth = 150;  // Ширина кожної секції
+    private int sectionSpacing = 5;  // Проміжок між секціями
+    private ContextMenuStrip sectionMenu;  // Меню для секцій
     private ContextMenuStrip taskMenu;  // Меню для задач
 
     public Sections(Control parentControl)
     {
         parent = parentControl;
-        InitializeSectionMenu();
-        InitializeTaskMenu();  // Инициализация меню для задач
+        InitializeSectionMenu();  // Ініціалізація контекстного меню для секцій
+        InitializeTaskMenu();  // Ініціалізація контекстного меню для задач
     }
 
+    // Ініціалізація меню для секцій
     private void InitializeSectionMenu()
     {
         sectionMenu = new ContextMenuStrip();
 
-        ToolStripMenuItem renameItem = new ToolStripMenuItem("Rename");
+        ToolStripMenuItem renameItem = new ToolStripMenuItem("Rename");  // Пункт для перейменування секції
         renameItem.Click += RenameSection;
 
-        ToolStripMenuItem changeColorItem = new ToolStripMenuItem("Change color");
+        ToolStripMenuItem changeColorItem = new ToolStripMenuItem("Change color");  // Пункт для зміни кольору секції
         changeColorItem.Click += ChangeSectionColor;
 
-        ToolStripMenuItem deleteItem = new ToolStripMenuItem("Delete section");
+        ToolStripMenuItem deleteItem = new ToolStripMenuItem("Delete section");  // Пункт для видалення секції
         deleteItem.Click += DeleteSection;
 
-        ToolStripMenuItem addTaskItem = new ToolStripMenuItem("Add Task");
+        ToolStripMenuItem addTaskItem = new ToolStripMenuItem("Add Task");  // Пункт для додавання задачі
         addTaskItem.Click += AddTaskToSection;
 
         sectionMenu.Items.Add(renameItem);
         sectionMenu.Items.Add(changeColorItem);
         sectionMenu.Items.Add(deleteItem);
-        sectionMenu.Items.Add(addTaskItem);  // Добавляем пункт для добавления задачи
+        sectionMenu.Items.Add(addTaskItem);  // Додаємо пункт для додавання задачі в секцію
     }
 
+    // Ініціалізація меню для задач
     private void InitializeTaskMenu()
     {
         taskMenu = new ContextMenuStrip();
 
-        ToolStripMenuItem renameTaskItem = new ToolStripMenuItem("Rename Task");
+        ToolStripMenuItem renameTaskItem = new ToolStripMenuItem("Rename Task");  // Пункт для перейменування задачі
         renameTaskItem.Click += RenameTask;
 
-        ToolStripMenuItem changeDescriptionItem = new ToolStripMenuItem("Change Description");
+        ToolStripMenuItem changeDescriptionItem = new ToolStripMenuItem("Change Description");  // Пункт для зміни опису задачі
         changeDescriptionItem.Click += ChangeTaskDescription;
 
-        ToolStripMenuItem changeColorItem = new ToolStripMenuItem("Change Color");
+        ToolStripMenuItem changeColorItem = new ToolStripMenuItem("Change Color");  // Пункт для зміни кольору задачі
         changeColorItem.Click += ChangeTaskColor;
 
-        ToolStripMenuItem deleteTaskItem = new ToolStripMenuItem("Delete Task");
+        ToolStripMenuItem deleteTaskItem = new ToolStripMenuItem("Delete Task");  // Пункт для видалення задачі
         deleteTaskItem.Click += DeleteTask;
 
-        ToolStripMenuItem moveToSectionItem = new ToolStripMenuItem("Move to Section");
+        ToolStripMenuItem moveToSectionItem = new ToolStripMenuItem("Move to Section");  // Пункт для переміщення задачі в іншу секцію
         moveToSectionItem.Click += ShowSectionsMenuForTask;
 
         taskMenu.Items.Add(renameTaskItem);
         taskMenu.Items.Add(changeDescriptionItem);
         taskMenu.Items.Add(changeColorItem);
         taskMenu.Items.Add(deleteTaskItem);
-        taskMenu.Items.Add(moveToSectionItem);  // Добавляем пункт для перемещения задачи
+        taskMenu.Items.Add(moveToSectionItem);  // Додаємо пункт для переміщення задачі
     }
 
+    // Відображення меню для вибору секції при переміщенні задачі
     private void ShowSectionsMenuForTask(object sender, EventArgs e)
     {
         RemoveSelectSectionMenuItem();
-        // Создаем подменю для выбора раздела
+        // Створюємо підменю для вибору секції
         ToolStripMenuItem moveToSectionSubMenu = new ToolStripMenuItem("Select Section");
 
-        // Перебираем все разделы и добавляем их как подменю
+        // Перебираємо всі секції та додаємо їх як підменю
         foreach (Control ctrl in parent.Controls)
         {
             if (ctrl is Panel section)
             {
-                ToolStripMenuItem sectionItem = new ToolStripMenuItem(section.Controls[0].Text); // Используем название раздела
-                sectionItem.Click += (s, args) => MoveTaskToSection(section);  // При клике перемещаем задачу
+                ToolStripMenuItem sectionItem = new ToolStripMenuItem(section.Controls[0].Text); // Назва секції
+                sectionItem.Click += (s, args) => MoveTaskToSection(section);  // При натисканні переміщаємо задачу
                 moveToSectionSubMenu.DropDownItems.Add(sectionItem);
             }
         }
 
-        // Добавляем подменю в контекстное меню
+        // Додаємо підменю до основного контекстного меню
         taskMenu.Items.Add(moveToSectionSubMenu);
-        taskMenu.Show(Cursor.Position);  // Показываем меню в позиции курсора
+        taskMenu.Show(Cursor.Position);  // Показуємо меню в позиції курсора
     }
 
+    // Переміщення задачі в іншу секцію
     private void MoveTaskToSection(Panel targetSection)
     {
         if (taskMenu.SourceControl is Panel taskPanel)
         {
-            // Снимаем задачу с текущего раздела
+            // Видаляємо задачу з поточної секції
             Panel currentSection = taskPanel.Parent as Panel;
             currentSection.Controls.Remove(taskPanel);
 
-            // Добавляем задачу в новый раздел
+            // Додаємо задачу в нову секцію
             int newY = 35;
             foreach (Control ctrl in targetSection.Controls)
             {
                 if (ctrl is Panel existingTaskPanel)
                 {
-                    newY = existingTaskPanel.Bottom + 10;  // Позиционируем задачу после последней задачи
+                    newY = existingTaskPanel.Bottom + 10;  // Позиціонуємо задачу після останньої задачі
                 }
             }
 
             taskPanel.Location = new Point(5, newY);
-            targetSection.Controls.Add(taskPanel);  // Добавляем задачу в новый раздел
+            targetSection.Controls.Add(taskPanel);  // Додаємо задачу до нової секції
 
-            // Обновляем порядок задач в разделе, если необходимо
+            // Оновлюємо порядок задач в секції
             RepositionTasks(targetSection);
 
             RemoveSelectSectionMenuItem();
         }
     }
 
+    // Видалення пункту "Select Section" з контекстного меню
     private void RemoveSelectSectionMenuItem()
     {
         foreach (ToolStripItem item in taskMenu.Items)
@@ -127,7 +132,7 @@ public class Sections
         }
     }
 
-
+    // Додавання нової секції
     public void AddSection()
     {
         Panel section = new Panel
@@ -155,6 +160,7 @@ public class Sections
 
         int newX = 10;
 
+        // Розміщуємо секцію
         foreach (Control ctrl in parent.Controls)
         {
             if (ctrl is Panel)
@@ -167,33 +173,30 @@ public class Sections
         section.Tag = titleLabel;
         parent.Controls.Add(section);
     }
+
+    // Додавання задачі до секції
     public void AddTaskToSection(object sender, EventArgs e)
     {
-        // Проверяем, на каком разделе был вызван контекстный клик
         if (sectionMenu.SourceControl is Panel section)
         {
-            // Создаем новую задачу и добавляем ее в раздел
             Task newTask = new Task("New Task", "Description of the task");
             int newY = 35;
 
-            // Определяем позицию для новой задачи (после всех существующих задач в разделе)
             foreach (Control ctrl in section.Controls)
             {
                 if (ctrl is Panel existingTaskPanel)
                 {
-                    newY = existingTaskPanel.Bottom + 10;  // Позиция ниже последней задачи
+                    newY = existingTaskPanel.Bottom + 10;
                 }
             }
 
-            // Создаем панель для новой задачи
             Panel newTaskPanel = newTask.CreateTaskPanel(taskMenu);
             newTaskPanel.Location = new Point(5, newY);
-
-            // Добавляем панель задачи в раздел
             section.Controls.Add(newTaskPanel);
         }
     }
 
+    // Переміщення задач по секції
     private void RepositionTasks(Panel section)
     {
         int newY = 35;
@@ -202,12 +205,13 @@ public class Sections
         {
             if (ctrl is Panel taskPanel)
             {
-                taskPanel.Location = new Point(5, newY);  // Перемещаем задачу вверх
-                newY = taskPanel.Bottom + 10;  // Обновляем позицию для следующей задачи
+                taskPanel.Location = new Point(5, newY);  // Розміщуємо задачу
+                newY = taskPanel.Bottom + 10;  // Оновлюємо позицію для наступної задачі
             }
         }
     }
 
+    // Перейменування задачі
     private void RenameTask(object sender, EventArgs e)
     {
         if (taskMenu.SourceControl is Panel taskPanel)
@@ -221,6 +225,7 @@ public class Sections
         }
     }
 
+    // Зміна опису задачі
     private void ChangeTaskDescription(object sender, EventArgs e)
     {
         if (taskMenu.SourceControl is Panel taskPanel)
@@ -234,6 +239,7 @@ public class Sections
         }
     }
 
+    // Зміна кольору задачі
     private void ChangeTaskColor(object sender, EventArgs e)
     {
         if (taskMenu.SourceControl is Panel taskPanel)
@@ -248,6 +254,7 @@ public class Sections
         }
     }
 
+    // Видалення задачі
     private void DeleteTask(object sender, EventArgs e)
     {
         if (taskMenu.SourceControl is Panel taskPanel)
@@ -256,10 +263,11 @@ public class Sections
             section.Controls.Remove(taskPanel);
             taskPanel.Dispose();
 
-            RepositionTasks(section);  // После удаления задачи сдвигаем все задачи
+            RepositionTasks(section);  // Після видалення задачі оновлюємо розташування інших
         }
     }
 
+    // Перейменування секції
     private void RenameSection(object sender, EventArgs e)
     {
         if (sectionMenu.SourceControl is Panel section)
@@ -273,6 +281,7 @@ public class Sections
         }
     }
 
+    // Зміна кольору секції
     private void ChangeSectionColor(object sender, EventArgs e)
     {
         if (sectionMenu.SourceControl is Panel section)
@@ -287,6 +296,7 @@ public class Sections
         }
     }
 
+    // Видалення секції
     private void DeleteSection(object sender, EventArgs e)
     {
         if (sectionMenu.SourceControl is Panel section)
@@ -294,10 +304,11 @@ public class Sections
             parent.Controls.Remove(section);
             section.Dispose();
 
-            RepositionSections();
+            RepositionSections();  // Оновлюємо розташування секцій
         }
     }
 
+    // Оновлення розташування секцій після видалення
     private void RepositionSections()
     {
         int newX = 10;
