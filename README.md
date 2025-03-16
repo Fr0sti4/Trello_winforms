@@ -84,6 +84,7 @@
 - ▶️ Відсоток тестів, які проходять на різних версіях Windows.
 
 # 📊 **Специфікаця обмежень в Alloy**
+```
 sig Task {
     title: one String,
     description: one String,
@@ -128,4 +129,5 @@ pred moveTaskToSection(t: Task, from: Section, to: Section) {
 run {
     some s: Section, t: Task | moveTaskToSection[t, s, s]
 }
+```
 
