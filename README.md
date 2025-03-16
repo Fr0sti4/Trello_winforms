@@ -241,3 +241,11 @@ System -> User: Return Updated Layout
 
 @enduml
 ```
+# Робота програми
+![1](Trello_winforms/ProgWork/1.jpg)
+![2](Trello_winforms/ProgWork/2.jpg)
+![3](Trello_winforms/ProgWork/3.jpg)
+![4](Trello_winforms/ProgWork/4.jpg)
+![5](Trello_winforms/ProgWork/5.jpg)
+![6](Trello_winforms/ProgWork/6.jpg)
+![7](Trello_winforms/ProgWork/7.jpg)
