@@ -22,9 +22,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Включает полный клон для корректного анализа
+          fetch-depth: 0  # Полный клон для корректного анализа
 
-      - name: Setup MSBuild
+      - name: Setup MSBuild 17
         uses: microsoft/setup-msbuild@v1.3.1
 
       - name: Install SonarQube Cloud scanner
@@ -40,5 +40,5 @@ jobs:
         shell: powershell
         run: |
           dotnet-sonarscanner begin /k:"Fr0sti4_Trello_winforms" /o:"fr0sti4" /d:sonar.token="${{ secrets.SONAR_TOKEN }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.skipJreProvisioning=true
-          dotnet build --configuration Release
+          msbuild Trello_winforms.sln /p:Configuration=Release /p:Platform="Any CPU"
           dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
