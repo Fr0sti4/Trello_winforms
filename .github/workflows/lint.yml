@@ -1,0 +1,19 @@
+name: Code Formatting
+
+on: [pull_request]
+
+jobs:
+  lint:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Run dotnet format
+        run: dotnet format --verify-no-changes
